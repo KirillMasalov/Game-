@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace Game_
 {
-    static class Program
+    public static class Program
     {
         /// <summary>
         /// Главная точка входа для приложения.
