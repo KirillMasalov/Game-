@@ -12,8 +12,11 @@ namespace Game_
         Point Position { get; set; }
         float Direction { get; set; }
         int Speed { get; set; }
+        int Radius { get; set; }
 
         void Move(Size offset);
         void Move(int x, int y);
+
+        string GetImage();
     }
 }

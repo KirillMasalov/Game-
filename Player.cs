@@ -12,23 +12,40 @@ namespace Game_
         public Point Position { get; set; }
         public float Direction { get; set; }
         public int Speed { get; set; }
-        public float Radius = 40f;
-        public int HeatPoints;
-        public int Lives;
+        public int Radius { get; set; }
+        public int HeatPoints { get; set; }
+        public int Lives { get; set; }
+        public bool IsRapid { get; set; }
 
-        public Player(Point position, int speed = 4)
+        public Player(Point position, int speed = 8, int radius = 40,
+            int hp = 50, int lives = 3, bool rapid = false)
         {
             Position = position;
             Speed = speed;
+            Radius = radius;
+            HeatPoints = hp;
+            Lives = lives;
+            IsRapid = rapid;
         }
-        public Player(int x, int y, int speed = 4)
+        public Player(int x, int y, int speed = 8, int radius = 40,
+            int hp = 50, int lives = 3, bool rapid = false)
         {
             Position = new Point(x, y);
             Speed = speed;
+            Radius = radius;
+            HeatPoints = hp;
+            Lives = lives;
+            IsRapid = rapid;
+        }
+
+        public string GetImage()
+        {
+            return "Player";
         }
 
         public void Move(Size offset)
         {
+            Position += Game.SolveCollision(this, offset);
             Position += Game.CorrectOffsetInBounds(this, offset);
         }
         public void Move(int dx, int dy)
@@ -38,9 +55,28 @@ namespace Game_
 
         public void Shoot()
         {
-            var objects = Game.Levels[Game.CurrentLevelNum].Objects;
+            Game.Scores = (Game.Scores == 0) ? 0 : Game.Scores - 1;
+            var bullets = Game.Levels[Game.CurrentLevelNum].Bullets;
             var player = Game.Player;
-            objects.Add(new Bullet(player.Position, player.Direction));
+            bullets.Add(new Bullet(player.Position, player.Direction, OwnerType.Player));
+            if (IsRapid)
+                bullets.Add(new Bullet(player.Position + new Size((int)(Math.Cos(player.Direction) * 35),
+                    (int)(Math.Sin(player.Direction) * 35)), player.Direction, OwnerType.Player));
+            Game.Sounds.Add("Shoot");
+        }
+
+        public void AddBonus(BonusItem bonus)
+        {
+            if (bonus.ItemBonus == Bonus.Heal)
+            {
+                HeatPoints = (HeatPoints <= 30) ? HeatPoints + 20 : 50;
+                Game.Sounds.Add("Heal");
+            }
+            else
+            {
+                IsRapid = true;
+                Game.Sounds.Add("Rapid");
+            }
         }
     }
 }
