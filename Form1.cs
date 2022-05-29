@@ -334,7 +334,7 @@ namespace Game_
                     bullet.Position.Y - bullet.Radius / 2, bullet.Radius, bullet.Radius);
             }
 
-            if (Game.Levels[Game.CurrentLevelNum].EnemiesCount == 0)
+            if (Game.Levels[Game.CurrentLevelNum].EnemiesCount <= 0)
                 e.Graphics.DrawImage(Images["NextLevel"],
                 Game.MapWidth - 180, (Game.MapHeight - 150) / 2, 150, 150);
 
